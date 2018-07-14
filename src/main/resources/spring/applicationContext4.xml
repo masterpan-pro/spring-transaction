@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="applicationContext.xml"/>
+
+    <!-- 配置业务层类 -->
+    <bean id="accountService" class="com.demo.service.impl.AccountServiceImpl4">
+        <property name="accountDao" ref="accountDao"/>
+    </bean>
+
+    <!-- ==================================4.使用注解配置声明式事务============================================ -->
+
+    <!-- 开启注解事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

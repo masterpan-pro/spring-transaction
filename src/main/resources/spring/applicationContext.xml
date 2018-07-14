@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <!-- 引入外部的属性文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!-- 配置HikariCP连接池 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg name="configuration">
+            <bean class="com.zaxxer.hikari.HikariConfig">
+                <property name="poolName" value="HikariCP"/>
+                <property name="connectionTestQuery" value="SELECT 1"/>
+                <property name="dataSourceClassName" value="org.h2.jdbcx.JdbcDataSource"/>
+                <property name="dataSourceProperties">
+                    <props>
+                        <prop key="url">${jdbc.url}</prop>
+                        <prop key="user">${jdbc.username}</prop>
+                        <prop key="password">${jdbc.password}</prop>
+                    </props>
+                </property>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- 初始化数据库 -->
+    <jdbc:initialize-database ignore-failures="ALL">
+        <jdbc:script location="classpath:sql/account.sql" encoding="UTF-8"/>
+    </jdbc:initialize-database>
+
+    <!-- 配置DAO类(简化，会自动配置JdbcTemplate) -->
+    <bean id="accountDao" class="com.demo.dao.impl.AccountDaoImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

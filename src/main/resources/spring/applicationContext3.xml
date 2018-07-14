@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <import resource="applicationContext.xml"/>
+
+    <!-- 配置业务层类 -->
+    <bean id="accountService" class="com.demo.service.impl.AccountServiceImpl3">
+        <property name="accountDao" ref="accountDao"/>
+    </bean>
+
+    <!-- ==================================3.使用XML配置声明式的事务管理,基于tx/aop=============================================== -->
+
+    <!-- 配置事务的通知 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--
+                propagation	:事务传播行为
+                isolation	:事务的隔离级别
+                read-only	:只读
+                rollback-for:发生哪些异常回滚
+                no-rollback-for	:发生哪些异常不回滚
+                timeout		:过期信息
+             -->
+            <tx:method name="transfer" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 配置切面 -->
+    <aop:config>
+        <!-- 配置切入点 -->
+        <aop:pointcut expression="execution(* com.demo.service.AccountService+.*(..))" id="pointcut1"/>
+        <!-- 配置切面 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut1"/>
+    </aop:config>
+</beans>
