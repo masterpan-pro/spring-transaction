@@ -1,5 +1,8 @@
 package com.demo.dao;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AccountDao {
 
     /**
@@ -13,4 +16,10 @@ public interface AccountDao {
      * @param money :转账金额
      */
     void inMoney(String in, Double money);
+
+    /**
+     * 查询所有，对比数据
+     */
+    List<Map<String, Object>> queryAll();
+
 }

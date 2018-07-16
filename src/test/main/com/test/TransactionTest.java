@@ -1,11 +1,19 @@
 package com.test;
 
+import com.demo.dao.AccountDao;
 import com.demo.service.AccountService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class TransactionTest {
+
+    @Test
+    public void queryAll() {
+        ApplicationContext ac = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
+        AccountDao accountDao = (AccountDao) ac.getBean("accountDao");
+        accountDao.queryAll().forEach(System.out::println);
+    }
 
     @Test
     public void test1() {
